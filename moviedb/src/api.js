@@ -12,3 +12,22 @@ export const searchMovies = async (query) => {
   });
   return response.data.results;
 };
+
+export const getTopRatedMovies = async () => {
+  const response = await axios.get(`${BASE_URL}/movie/top_rated`, {
+    params: {
+      api_key: API_KEY,
+    },
+  });
+  return response.data.results;
+};
+ 
+// Fetch top-rated TV series
+export const getTopRatedSeries = async () => {
+  const response = await axios.get(`${BASE_URL}/tv/top_rated`, {
+    params: {
+      api_key: API_KEY,
+    },
+  });
+  return response.data.results;
+};
