@@ -52,3 +52,16 @@ export const getMoviesByGenre = async (genreId) => {
   });
   return response.data.results;
 };
+
+//Get movie trailer
+export const getMovieVideos = async (movieId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
+      params: {
+        api_key: API_KEY,
+        language: 'en-US',
+      },
+    });
+    return response.data.results; // Returns an array of videos (trailers, teasers, etc.)
+ 
+};
