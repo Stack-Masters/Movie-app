@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import SearchBar from './components/searchBar';
 import MovieCard from './components/movieCard';
 import MovieDetails from './components/movieDetails';
@@ -9,6 +9,7 @@ import {
   getTopRatedSeries,
   searchMovies,
   getMoviesByGenre,
+  getMovieVideos, // Import the new function
 } from './api';
 import './App.css';
  
@@ -22,6 +23,8 @@ function App() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
+  const [trailerUrl, setTrailerUrl] = useState(''); // State for trailer URL
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
   const timerRef = useRef(null);
  
   useEffect(() => {
@@ -67,6 +70,31 @@ function App() {
     fetchMoviesByGenre();
   }, [selectedGenre]);
  
+  // Fetch trailer for the featured movie
+  const featuredMovie = trendingMovies[currentMovieIndex] || {};
+  useEffect(() => {
+    const fetchTrailer = async () => {
+      if (featuredMovie.id) {
+        try {
+          const videos = await getMovieVideos(featuredMovie.id);
+          // Find the first trailer or teaser
+          const trailer = videos.find(
+            (video) => video.type === 'Trailer' || video.type === 'Teaser'
+          );
+          if (trailer && trailer.site === 'YouTube') {
+            setTrailerUrl(`https://www.youtube.com/embed/${trailer.key}?autoplay=1`);
+          } else {
+            setTrailerUrl(''); // No trailer found
+          }
+        } catch (error) {
+          console.error('Error fetching trailer:', error);
+          setTrailerUrl('');
+        }
+      }
+    };
+    fetchTrailer();
+  }, [featuredMovie.id]); // Fetch trailer when featuredMovie changes
+ 
   const handleSearch = async (query) => {
     setLoading(true);
     setError(null);
@@ -82,7 +110,6 @@ function App() {
     }
   };
  
-  // Define 10 genres (TMDb genre IDs and names)
   const genres = [
     { id: 28, name: 'Action' },
     { id: 35, name: 'Comedy' },
@@ -96,12 +123,10 @@ function App() {
     { id: 99, name: 'Documentary' },
   ];
  
-  const handleGenreChange = (event) => {
-    const genreId = event.target.value;
+  const handleGenreChange = (genreId) => {
     setSelectedGenre(genreId);
   };
  
-  // Carousel controls
   const nextMovie = () => {
     setCurrentMovieIndex((prev) =>
       prev + 1 < Math.min(6, trendingMovies.length) ? prev + 1 : 0
@@ -149,39 +174,61 @@ function App() {
     return () => clearInterval(timerRef.current);
   }, [trendingMovies]);
  
-  const featuredMovie = trendingMovies[currentMovieIndex] || {};
+  // Handle Watch Trailer button click
+  const handleWatchTrailer = () => {
+    if (trailerUrl) {
+      setShowModal(true);
+    } else {
+      alert('No trailer available for this movie.');
+    }
+  };
+ 
+  // Close the modal
+  const closeModal = () => {
+    setShowModal(false);
+    setTrailerUrl(''); // Reset trailer URL to stop playback
+  };
  
   return (
     <Router>
       <div className="app-container">
         <header className="header">
-          <Link to="/" className="logo">
+          <NavLink to="/" className="logo">
             StackMasters
-          </Link>
+          </NavLink>
           <nav>
-            <Link to="/" className="nav-link active">
-              Home
-            </Link>
-            <Link to="/movies" className="nav-link">
-              Movies
-            </Link>
-            <Link to="/series" className="nav-link">
-              TV Series
-            </Link>
-            <select
-              onChange={handleGenreChange}
-              className="genre-dropdown"
-              defaultValue=""
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
             >
-              <option value="" disabled>
-                Select Genre
-              </option>
-              {genres.map((genre) => (
-                <option key={genre.id} value={genre.id}>
-                  {genre.name}
-                </option>
-              ))}
-            </select>
+              Home
+            </NavLink>
+            <NavLink
+              to="/movies"
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            >
+              Movies
+            </NavLink>
+            <NavLink
+              to="/series"
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            >
+              TV Series
+            </NavLink>
+            <div className="custom-dropdown">
+              <span className="dropdown-trigger">Select Genre</span>
+              <div className="dropdown-content">
+                {genres.map((genre) => (
+                  <div
+                    key={genre.id}
+                    className="dropdown-item"
+                    onClick={() => handleGenreChange(genre.id)}
+                  >
+                    {genre.name}
+                  </div>
+                ))}
+              </div>
+            </div>
           </nav>
         </header>
  
@@ -208,9 +255,35 @@ function App() {
                       <h1>{featuredMovie.title}</h1>
                       <p>{featuredMovie.overview}</p>
                       <div className="hero-buttons">
-                        <button className="watch-trailer">Watch trailer</button>
+                        <button className="watch-trailer" onClick={handleWatchTrailer}>
+                          Watch trailer
+                        </button>
                         <button className="watch-now">Watch now</button>
                       </div>
+                    </div>
+                  </div>
+                )}
+ 
+                {/* Modal for Trailer */}
+                {showModal && (
+                  <div className="modal">
+                    <div className="modal-content">
+                      <span className="close-modal" onClick={closeModal}>
+                        &times;
+                      </span>
+                      {trailerUrl ? (
+                        <iframe
+                          width="100%"
+                          height="400"
+                          src={trailerUrl}
+                          title="Movie Trailer"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : (
+                        <p>No trailer available.</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -220,13 +293,13 @@ function App() {
                     <h2>Search Results</h2>
                     <div className="movie-list">
                       {searchResults.map((item) => (
-                        <Link
+                        <NavLink
                           key={item.id}
                           to={`/movie/${item.id}`}
                           className="movie-card"
                         >
                           <MovieCard movie={item} />
-                        </Link>
+                        </NavLink>
                       ))}
                     </div>
                   </section>
@@ -239,13 +312,13 @@ function App() {
                     </h2>
                     <div className="movie-list">
                       {genreMovies.map((movie) => (
-                        <Link
+                        <NavLink
                           key={movie.id}
                           to={`/movie/${movie.id}`}
                           className="movie-card"
                         >
                           <MovieCard movie={movie} />
-                        </Link>
+                        </NavLink>
                       ))}
                     </div>
                   </section>
@@ -255,13 +328,13 @@ function App() {
                   <h2>Trending movies</h2>
                   <div className="movie-list">
                     {trendingMovies.map((movie) => (
-                      <Link
+                      <NavLink
                         key={movie.id}
                         to={`/movie/${movie.id}`}
                         className="movie-card"
                       >
                         <MovieCard movie={movie} />
-                      </Link>
+                      </NavLink>
                     ))}
                   </div>
                 </section>
@@ -270,13 +343,13 @@ function App() {
                   <h2>Top rated movies</h2>
                   <div className="movie-list">
                     {topRatedMovies.map((movie) => (
-                      <Link
+                      <NavLink
                         key={movie.id}
                         to={`/movie/${movie.id}`}
                         className="movie-card"
                       >
                         <MovieCard movie={movie} />
-                      </Link>
+                      </NavLink>
                     ))}
                   </div>
                   <a href="#" className="view-all">
@@ -288,13 +361,13 @@ function App() {
                   <h2>Top rated series</h2>
                   <div className="movie-list">
                     {topRatedSeries.map((series) => (
-                      <Link
+                      <NavLink
                         key={series.id}
                         to={`/series/${series.id}`}
                         className="movie-card"
                       >
                         <MovieCard movie={series} />
-                      </Link>
+                      </NavLink>
                     ))}
                   </div>
                   <a href="#" className="view-all">
