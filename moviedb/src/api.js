@@ -22,11 +22,32 @@ export const getTopRatedMovies = async () => {
   return response.data.results;
 };
  
+//Fetch trendingMovies
+export const getTrendingMovies = async () => {
+  const response = await axios.get(`${BASE_URL}/trending/movie/week`, {
+    params: {
+      api_key: API_KEY,
+    },
+  });
+  return response.data.results;
+};
+
 // Fetch top-rated TV series
 export const getTopRatedSeries = async () => {
   const response = await axios.get(`${BASE_URL}/tv/top_rated`, {
     params: {
       api_key: API_KEY,
+    },
+  });
+  return response.data.results;
+};
+
+// Fetch movies by genre
+export const getMoviesByGenre = async (genreId) => {
+  const response = await axios.get(`${BASE_URL}/discover/movie`, {
+    params: {
+      api_key: API_KEY,
+      with_genres: genreId,
     },
   });
   return response.data.results;
