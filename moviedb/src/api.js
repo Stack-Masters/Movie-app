@@ -63,5 +63,8 @@ export const getMovieVideos = async (movieId) => {
       },
     });
     return response.data.results; // Returns an array of videos (trailers, teasers, etc.)
- 
+  } catch (error) {
+    console.error('Error fetching movie videos:', error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
 };
