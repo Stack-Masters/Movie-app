@@ -12,7 +12,7 @@ import {
   getMovieVideos, // Import the new function
 } from './api';
 import './App.css';
- 
+
 function App() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -26,7 +26,7 @@ function App() {
   const [trailerUrl, setTrailerUrl] = useState(''); // State for trailer URL
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   const timerRef = useRef(null);
- 
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -49,7 +49,7 @@ function App() {
     };
     fetchData();
   }, []);
- 
+
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       if (selectedGenre) {
@@ -69,7 +69,7 @@ function App() {
     };
     fetchMoviesByGenre();
   }, [selectedGenre]);
- 
+
   // Fetch trailer for the featured movie
   const featuredMovie = trendingMovies[currentMovieIndex] || {};
   useEffect(() => {
@@ -94,7 +94,7 @@ function App() {
     };
     fetchTrailer();
   }, [featuredMovie.id]); // Fetch trailer when featuredMovie changes
- 
+
   const handleSearch = async (query) => {
     setLoading(true);
     setError(null);
@@ -109,7 +109,7 @@ function App() {
       setLoading(false);
     }
   };
- 
+
   const genres = [
     { id: 28, name: 'Action' },
     { id: 35, name: 'Comedy' },
@@ -122,18 +122,18 @@ function App() {
     { id: 10749, name: 'Romance' },
     { id: 99, name: 'Documentary' },
   ];
- 
+
   const handleGenreChange = (genreId) => {
     setSelectedGenre(genreId);
   };
- 
+
   const nextMovie = () => {
     setCurrentMovieIndex((prev) =>
       prev + 1 < Math.min(6, trendingMovies.length) ? prev + 1 : 0
     );
     resetTimer();
   };
- 
+
   const handleDragStart = (e) => {
     const startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
     const handleDragMove = (moveEvent) => {
@@ -161,19 +161,19 @@ function App() {
     document.addEventListener('touchmove', handleDragMove, { passive: true });
     document.addEventListener('touchend', handleDragEnd);
   };
- 
+
   const resetTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
     timerRef.current = setInterval(nextMovie, 8000);
   };
- 
+
   useEffect(() => {
     resetTimer();
     return () => clearInterval(timerRef.current);
   }, [trendingMovies]);
- 
+
   // Handle Watch Trailer button click
   const handleWatchTrailer = () => {
     if (trailerUrl) {
@@ -182,13 +182,13 @@ function App() {
       alert('No trailer available for this movie.');
     }
   };
- 
+
   // Close the modal
   const closeModal = () => {
     setShowModal(false);
     setTrailerUrl(''); // Reset trailer URL to stop playback
   };
- 
+
   return (
     <Router>
       <div className="app-container">
@@ -231,7 +231,7 @@ function App() {
             </div>
           </nav>
         </header>
- 
+
         <Routes>
           <Route
             path="/"
@@ -263,7 +263,7 @@ function App() {
                     </div>
                   </div>
                 )}
- 
+
                 {/* Modal for Trailer */}
                 {showModal && (
                   <div className="modal">
@@ -287,7 +287,7 @@ function App() {
                     </div>
                   </div>
                 )}
- 
+
                 {searchResults.length > 0 && (
                   <section className="section">
                     <h2>Search Results</h2>
@@ -304,7 +304,7 @@ function App() {
                     </div>
                   </section>
                 )}
- 
+
                 {genreMovies.length > 0 && (
                   <section className="section">
                     <h2>
@@ -323,7 +323,7 @@ function App() {
                     </div>
                   </section>
                 )}
- 
+
                 <section className="section">
                   <h2>Trending movies</h2>
                   <div className="movie-list">
@@ -338,7 +338,7 @@ function App() {
                     ))}
                   </div>
                 </section>
- 
+
                 <section className="section">
                   <h2>Top rated movies</h2>
                   <div className="movie-list">
@@ -356,7 +356,7 @@ function App() {
                     View all
                   </a>
                 </section>
- 
+
                 <section className="section">
                   <h2>Top rated series</h2>
                   <div className="movie-list">
@@ -393,5 +393,5 @@ function App() {
     </Router>
   );
 }
- 
+
 export default App;
