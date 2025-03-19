@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-do
 import SearchBar from './components/searchBar';
 import MovieCard from './components/movieCard';
 import MovieDetails from './components/movieDetails';
-import MoviesPage from './components/MoviesPage'; // Import the new component
+import MoviesPage from './components/MoviesPage';
+import SeriesPage from './components/SeriesPage'; // Import the new component
 import {
   getTrendingMovies,
   getTopRatedMovies,
@@ -386,7 +387,10 @@ function App() {
             path="/movies"
             element={<MoviesPage selectedGenre={selectedGenre} />}
           />
-          <Route path="/series" element={<div>TV Series Page (Coming Soon)</div>} />
+          <Route
+            path="/series"
+            element={<SeriesPage selectedGenre={selectedGenre} />}
+          />
         </Routes>
       </div>
     </Router>
