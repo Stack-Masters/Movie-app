@@ -32,7 +32,7 @@ export const getTrendingMovies = async () => {
   return response.data.results;
 };
 
-// Fetch top-rated TV series
+// Fetch top-rated TV shows
 export const getTopRatedSeries = async () => {
   const response = await axios.get(`${BASE_URL}/tv/top_rated`, {
     params: {
