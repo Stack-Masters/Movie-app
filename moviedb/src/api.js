@@ -33,11 +33,12 @@ export const getTrendingMovies = async (page = 1) => {
   return response.data.results;
 };
 
-// Fetch top-rated TV shows
-export const getTopRatedSeries = async () => {
+// Fetch top-rated TV shows with pagination
+export const getTopRatedSeries = async (page = 1) => {
   const response = await axios.get(`${BASE_URL}/tv/top_rated`, {
     params: {
       api_key: API_KEY,
+      page: page,
     },
   });
   return response.data.results;
@@ -46,6 +47,18 @@ export const getTopRatedSeries = async () => {
 // Fetch movies by genre with pagination
 export const getMoviesByGenre = async (genreId, page = 1) => {
   const response = await axios.get(`${BASE_URL}/discover/movie`, {
+    params: {
+      api_key: API_KEY,
+      with_genres: genreId,
+      page: page,
+    },
+  });
+  return response.data.results;
+};
+
+// Fetch TV series by genre with pagination
+export const getSeriesByGenre = async (genreId, page = 1) => {
+  const response = await axios.get(`${BASE_URL}/discover/tv`, {
     params: {
       api_key: API_KEY,
       with_genres: genreId,
@@ -67,6 +80,38 @@ export const getMovieVideos = async (movieId) => {
     return response.data.results;
   } catch (error) {
     console.error('Error fetching movie videos:', error);
+    throw error;
+  }
+};
+
+// Get series trailer
+export const getSeriesVideos = async (seriesId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/tv/${seriesId}/videos`, {
+      params: {
+        api_key: API_KEY,
+        language: 'en-US',
+      },
+    });
+    return response.data.results;
+  } catch (error) {
+    console.error('Error fetching series videos:', error);
+    throw error;
+  }
+};
+
+// Fetch series details by ID
+export const getSeriesDetails = async (seriesId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/tv/${seriesId}`, {
+      params: {
+        api_key: API_KEY,
+        language: 'en-US',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching series details:', error);
     throw error;
   }
 };
