@@ -44,6 +44,10 @@ function MovieDetails({ movies }) {
     }
   };
 
+  const handleStopTrailer = () => {
+    setShowTrailer(false);
+  };
+
   return (
     <div className="movie-details">
       <Link to="/" className="back-link">
@@ -71,6 +75,9 @@ function MovieDetails({ movies }) {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
+              <button className="stop-button" onClick={handleStopTrailer}>
+                ✕
+              </button>
             </div>
           )}
         </div>
