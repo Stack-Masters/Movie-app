@@ -36,6 +36,10 @@ function MovieDetails({ movies }) {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://via.placeholder.com/500x750?text=No+Poster';
 
+  const backdropUrl = movie.backdrop_path
+    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+    : null;
+
   const handlePlayTrailer = () => {
     if (trailerKey) {
       setShowTrailer(true);
@@ -49,7 +53,16 @@ function MovieDetails({ movies }) {
   };
 
   return (
-    <div className="movie-details">
+    <div
+      className="movie-details"
+      style={{
+        backgroundImage: backdropUrl
+          ? `url(${backdropUrl})`
+          : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <Link to="/" className="back-link">
         ← Back to Home
       </Link>
