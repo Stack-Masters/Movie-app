@@ -244,10 +244,10 @@ function App() {
               className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
               onClick={toggleMenu}
             >
-              TV Series
+              TV Shows
             </NavLink>
             <div className="custom-dropdown">
-              <span className="dropdown-trigger">Select Genre</span>
+              <span className="dropdown-trigger">Genre</span>
               <div className="dropdown-content">
                 {genres.map((genre) => (
                   <div
@@ -292,7 +292,7 @@ function App() {
                         <button className="watch-trailer" onClick={handleWatchTrailer}>
                           Watch trailer
                         </button>
-                        <button className="watch-now">Watch now</button>
+                        <button className="watch-now">Watchlist</button>
                       </div>
                     </div>
                   </div>
