@@ -578,7 +578,7 @@ nav {
     flex-wrap: wrap;
     padding: 10px;
   }
-
+}
   nav {
     display: none; /* Hide nav by default on mobile */
     flex-direction: column;
