@@ -16,7 +16,7 @@ import {
   getMovieVideos,
 } from './api';
 import './App.css';
-
+ 
 function App() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -32,7 +32,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
   const timerRef = useRef(null);
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -55,7 +55,7 @@ function App() {
     };
     fetchData();
   }, []);
-
+ 
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       if (selectedGenre) {
@@ -73,7 +73,7 @@ function App() {
         }
       }
     };
-
+ 
     const fetchSeriesByGenre = async () => {
       if (selectedGenre) {
         setLoading(true);
@@ -90,11 +90,11 @@ function App() {
         }
       }
     };
-
+ 
     fetchMoviesByGenre();
     fetchSeriesByGenre();
   }, [selectedGenre]);
-
+ 
   const featuredMovie = trendingMovies[currentMovieIndex] || {};
   useEffect(() => {
     const fetchTrailer = async () => {
@@ -117,7 +117,7 @@ function App() {
     };
     fetchTrailer();
   }, [featuredMovie.id]);
-
+ 
   const handleSearch = async (query) => {
     setLoading(true);
     setError(null);
@@ -132,7 +132,7 @@ function App() {
       setLoading(false);
     }
   };
-
+ 
   const genres = [
     { id: 28, name: 'Action' },
     { id: 35, name: 'Comedy' },
@@ -145,18 +145,18 @@ function App() {
     { id: 10749, name: 'Romance' },
     { id: 99, name: 'Documentary' },
   ];
-
+ 
   const handleGenreChange = (genreId) => {
     setSelectedGenre(genreId);
   };
-
+ 
   const nextMovie = () => {
     setCurrentMovieIndex((prev) =>
       prev + 1 < Math.min(6, trendingMovies.length) ? prev + 1 : 0
     );
     resetTimer();
   };
-
+ 
   const handleDragStart = (e) => {
     const startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
     const handleDragMove = (moveEvent) => {
@@ -184,19 +184,19 @@ function App() {
     document.addEventListener('touchmove', handleDragMove, { passive: true });
     document.addEventListener('touchend', handleDragEnd);
   };
-
+ 
   const resetTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
     timerRef.current = setInterval(nextMovie, 8000);
   };
-
+ 
   useEffect(() => {
     resetTimer();
     return () => clearInterval(timerRef.current);
   }, [trendingMovies]);
-
+ 
   const handleWatchTrailer = () => {
     if (trailerUrl) {
       setShowModal(true);
@@ -204,22 +204,22 @@ function App() {
       alert('No trailer available for this movie.');
     }
   };
-
+ 
   const closeModal = () => {
     setShowModal(false);
     setTrailerUrl('');
   };
-
+ 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
-
+ 
   return (
     <Router>
       <div className="app-container">
         <header className="header">
           <NavLink to="/" className="logo">
-            StackMasters
+            TDMovies
           </NavLink>
           <button className="hamburger" onClick={toggleMenu}>
             ☰
@@ -265,7 +265,7 @@ function App() {
             </div>
           </nav>
         </header>
-
+ 
         <Routes>
           <Route
             path="/"
@@ -297,7 +297,7 @@ function App() {
                     </div>
                   </div>
                 )}
-
+ 
                 {showModal && (
                   <div className="modal">
                     <div className="modal-content">
@@ -320,7 +320,7 @@ function App() {
                     </div>
                   </div>
                 )}
-
+ 
                 {searchResults.length > 0 && (
                   <section className="section">
                     <h2>Search Results</h2>
@@ -337,7 +337,7 @@ function App() {
                     </div>
                   </section>
                 )}
-
+ 
                 {genreMovies.length > 0 && (
                   <section className="section">
                     <h2>
@@ -356,7 +356,7 @@ function App() {
                     </div>
                   </section>
                 )}
-
+ 
                 <section className="section">
                   <h2>Trending movies</h2>
                   <div className="movie-list">
@@ -371,7 +371,7 @@ function App() {
                     ))}
                   </div>
                 </section>
-
+ 
                 <section className="section">
                   <h2>Top rated movies</h2>
                   <div className="movie-list">
@@ -389,9 +389,9 @@ function App() {
                     View all
                   </a>
                 </section>
-
+ 
                 <section className="section">
-                  <h2>Top rated series</h2>
+                  <h2>Top rated Tv shows</h2>
                   <div className="movie-list">
                     {topRatedSeries.map((series) => (
                       <NavLink
@@ -432,5 +432,5 @@ function App() {
     </Router>
   );
 }
-
+ 
 export default App;
