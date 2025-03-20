@@ -219,7 +219,7 @@ function App() {
       <div className="app-container">
         <header className="header">
           <NavLink to="/" className="logo">
-            TDMovies
+            SM-Movies
           </NavLink>
           <button className="hamburger" onClick={toggleMenu}>
             ☰
